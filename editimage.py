@@ -6,6 +6,7 @@ import os
 import cv2
 import numpy as np
 import argparse
+import re
 
 version = "1.0.0"
 
@@ -42,7 +43,19 @@ def compress_image(args):
     Image compression processing function
     """
     channel = 1
-    img = cv2.imread(args.input)
+    src_file_name = args.input
+    dst_file_name = args.o
+
+    # Compare extensions
+    src_path, src_ext = os.path.splitext(src_file_name)
+    dst_path, dst_ext = os.path.splitext(dst_file_name)
+
+    # An error occurs because the extension conversion is not supported
+    if src_ext != dst_ext:
+        print("[FAILED] : Invarid extensions", src_ext, dst_ext)
+        sys.exit(1)
+
+    img = cv2.imread(src_file_name)
 
     (result, encimg) = cv2.imencode('.jpg', img, [
         int(cv2.IMWRITE_JPEG_QUALITY),
@@ -53,9 +66,11 @@ def compress_image(args):
         return (1)
 
     dst = cv2.imdecode(encimg, channel)
-    cv2.imwrite(args.o, dst)
 
-    return (0, FileInfo(args.o))
+    # Image writing process
+    cv2.imwrite(dst_file_name, dst)
+
+    return (0, FileInfo(dst_file_name))
 
 def get_args():
     """
@@ -74,21 +89,30 @@ def get_args():
 
     return args
 
+def print_image_info(src, dst):
+    """
+    Display original image and converted image information
+    """
+    print(f'{src.filename} to {dst.filename}')
+    print(f'{src.filesize} to {dst.filesize}')
+
 def main():
     args = get_args()
 
-    src = FileInfo(args.input)
+    # Get information of original image
+    src_image_info = FileInfo(args.input)
 
     if args.mode == 'comp':
-        (ret, dst) = compress_image(args)
+        (ret, dst_image_info) = compress_image(args)
     elif args.mode == 'resize':
         ret = resize_image(args)
 
+    # Check end status of conversion process
     if ret != 0:
         print("[FAILED] : " + args.mode)
+        sys.exit(1)
 
-    print(f'{src.filename} to {dst.filename}')
-    print(f'{src.filesize} to {dst.filesize}')
+    print_image_info(src_image_info, dst_image_info)
 
 if __name__ == "__main__" :
     main()
