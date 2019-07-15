@@ -1,26 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-"""
-usage: editimage.py : 1.0.0 [-h] [--version] [--mode {comp,resize}] [-q Q]
-                            [-o O] [--height HEIGHT] [--witdh WITDH]
-                            input
-
-jpg encoder given images.
-
-positional arguments:
-  input                 input file
-
-optional arguments:
-  -h, --help            show this help message and exit
-  --version             show program's version number and exit
-  --mode {comp,resize}  mode choice
-  -q Q                  quality (0 to 100)
-  -o O                  output file (default=resize.jpg)
-  --height HEIGHT       Image height (default=100)
-  --witdh WITDH         Image width (default=100)
-"""
-
 import sys
 import os
 import cv2
@@ -120,10 +100,11 @@ def print_image_info(src, dst):
     """
     Display original image and converted image information
     """
-    print(f'{src.filename} to {dst.filename}')
-    print(f'{src.filesize} to {dst.filesize}')
+    print(Fore.WHITE + f'{src.filename} to {dst.filename}')
+    print(Fore.WHITE + f'{src.filesize} to {dst.filesize}')
 
 def main():
+    print_usage()
     args = get_args()
 
     # Get information of original image
