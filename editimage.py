@@ -1,6 +1,26 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
+"""
+usage: editimage.py : 1.0.0 [-h] [--version] [--mode {comp,resize}] [-q Q]
+                            [-o O] [--height HEIGHT] [--witdh WITDH]
+                            input
+
+jpg encoder given images.
+
+positional arguments:
+  input                 input file
+
+optional arguments:
+  -h, --help            show this help message and exit
+  --version             show program's version number and exit
+  --mode {comp,resize}  mode choice
+  -q Q                  quality (0 to 100)
+  -o O                  output file (default=resize.jpg)
+  --height HEIGHT       Image height (default=100)
+  --witdh WITDH         Image width (default=100)
+"""
+
 import sys
 import os
 import cv2
@@ -8,7 +28,14 @@ import numpy as np
 import argparse
 import re
 
-version = "1.0.0"
+# Program Version
+VERSION = "1.0.0"
+
+# Select a problem size
+M = 10000
+K = 1000
+N = 5000
+total_flops = M*K*(2*N+3)
 
 class FileInfo():
     """
@@ -76,7 +103,7 @@ def get_args():
     """
     Option parser
     """
-    program_name = os.path.basename(__file__) + " : " + version
+    program_name = os.path.basename(__file__) + " : " + VERSION
     parser = argparse.ArgumentParser(description='jpg encoder given images.', prog=program_name)
     parser.add_argument("input", type=str, help='input file')
     parser.add_argument('--version', action='version', version='%(prog)s')
