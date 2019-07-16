@@ -18,6 +18,8 @@ K = 1000
 N = 5000
 total_flops = M*K*(2*N+3)
 
+# Debug Level
+verbose = 0
 
 class FileInfo():
     """
@@ -53,12 +55,15 @@ class FileInfo():
         return self.__width
 
 
-def resize_image(args):
+def resize_image(args, src_image_info):
     """
     Image resizing function
     """
-    print("h", args.height)
-    print("w", args.witdh)
+    img = cv2.imread(args.input)
+    img2 = cv2.resize(img , (int(src_image_info.width*0.1), int(src_image_info.height*0.1)))
+    cv2.imwrite(args.o , img2)
+
+    return (0, FileInfo(args.o))
 
 
 def compress_image(args):
@@ -109,7 +114,12 @@ def get_args():
     parser.add_argument("-o", type=str, default='resize.jpg', help='output file (default=resize.jpg)')
     parser.add_argument("--height", type=str, default='100', help='Image height (default=100)')
     parser.add_argument("--witdh", type=str, default='100', help='Image width (default=100)')
+    parser.add_argument("--verbose", type=str, default='0', help='debug level')
     args = parser.parse_args()
+
+    if args.verbose:
+        global verbose
+        verbose = 1
 
     return args
 
@@ -118,11 +128,13 @@ def print_image_info(src, dst):
     """
     Display original image and converted image information
     """
-    print("==============================")
-    print(Fore.WHITE + f'FILE_NAME : {src.filename} => {dst.filename}')
-    print(Fore.WHITE + f'FILE_SIZE : {src.filesize} => {dst.filesize}')
-    print(Fore.WHITE + f'FILE_WIDTH : {src.width}    => {dst.width}')
-    print(Fore.WHITE + f'FILE_HEIGHT : {src.height}    => {dst.height}')
+    print(Fore.GREEN + "[OK] Processing succeeded")
+
+    if verbose:
+        print(Fore.GREEN + f'[DEBUG INFO] FILE_NAME : {src.filename} => {dst.filename}')
+        print(Fore.GREEN + f'[DEBUG INFO] FILE_SIZE : {src.filesize} => {dst.filesize}')
+        print(Fore.GREEN + f'[DEBUG INFO] FILE_WIDTH : {src.width} => {dst.width}')
+        print(Fore.GREEN + f'[DEBUG INFO] FILE_HEIGHT : {src.height} => {dst.height}')
 
 
 def check_file_exit(filepath: str):
@@ -138,7 +150,10 @@ def check_file_exit(filepath: str):
     except FileNotFoundError as e:
         return 0
     except AttributeError as e:
-        print(Fore.RED + "[Errno 3] The specified file is not an image '" + filepath + "'")
+        print(Fore.RED + "[FAILED] The specified file is not an image '" + filepath + "'")
+        sys.exit(1)
+    except IsADirectoryError as e:
+        print(Fore.RED + "[FAILED] Specified file is a directory'" + filepath + "'")
         sys.exit(1)
 
 
@@ -157,24 +172,30 @@ def yes_no_input():
 def main():
     args = get_args()
 
+    # Consistency check of input image
     src_image_info = check_file_exit(args.input)
+    if src_image_info == 0:
+        print(Fore.RED + "[FAILED] There is no such image file '" + args.input + "'")
+        sys.exit(1)
 
     # When the output destination file already exists
     if check_file_exit(args.o):
         if yes_no_input() == False:
+            print(Fore.BLUE + "[INFO] : Quit the program...")
             sys.exit(1)
 
     # Mode select
     if args.mode == 'comp':
         (ret, dst_image_info) = compress_image(args)
     elif args.mode == 'resize':
-        ret = resize_image(args)
+        (ret, dst_image_info) = resize_image(args, src_image_info)
 
     # Check end status of conversion process
     if ret != 0:
         print(Fore.RED + "[FAILED] : " + args.mode)
         sys.exit(1)
 
+    # Print result
     print_image_info(src_image_info, dst_image_info)
 
 
