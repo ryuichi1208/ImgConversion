@@ -138,7 +138,7 @@ def check_file_exit(filepath: str):
     except FileNotFoundError as e:
         return 0
     except AttributeError as e:
-        print("[Errno 3] The specified file is not an image '" + args.input + "'")
+        print(Fore.RED + "[Errno 3] The specified file is not an image '" + filepath + "'")
         sys.exit(1)
 
 
@@ -172,7 +172,7 @@ def main():
 
     # Check end status of conversion process
     if ret != 0:
-        print("[FAILED] : " + args.mode)
+        print(Fore.RED + "[FAILED] : " + args.mode)
         sys.exit(1)
 
     print_image_info(src_image_info, dst_image_info)
