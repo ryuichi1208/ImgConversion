@@ -7,6 +7,7 @@ import cv2
 import numpy as np
 import argparse
 import re
+from colorama import Fore
 
 # Program Version
 VERSION = "1.0.0"
@@ -17,14 +18,19 @@ K = 1000
 N = 5000
 total_flops = M*K*(2*N+3)
 
+
 class FileInfo():
     """
     Class for holding file information
     """
     def __init__(self, filename):
+        img = cv2.imread(filename, cv2.IMREAD_COLOR)
+        img_height, img_width, channels = img.shape[:3]
         self.__filename = filename
         self.__filesize = os.path.getsize(filename)
-        self.__ctime    = os.stat(filename).st_mtime
+        self.__ctime = os.stat(filename).st_mtime
+        self.__height = img_height
+        self.__width = img_width
 
     @property
     def filename(self):
@@ -38,12 +44,22 @@ class FileInfo():
     def ctime(self):
         return self.__ctime
 
+    @property
+    def height(self):
+        return self.__height
+
+    @property
+    def width(self):
+        return self.__width
+
+
 def resize_image(args):
     """
     Image resizing function
     """
     print("h", args.height)
     print("w", args.witdh)
+
 
 def compress_image(args):
     """
@@ -58,7 +74,7 @@ def compress_image(args):
     dst_path, dst_ext = os.path.splitext(dst_file_name)
 
     # An error occurs because the extension conversion is not supported
-    if src_ext != dst_ext:
+    if not src_ext == dst_ext:
         print("[FAILED] : Invarid extensions", src_ext, dst_ext)
         sys.exit(1)
 
@@ -69,7 +85,7 @@ def compress_image(args):
         int(args.q)
     ])
 
-    if result == False:
+    if result is False:
         return (1)
 
     dst = cv2.imdecode(encimg, channel)
@@ -78,6 +94,7 @@ def compress_image(args):
     cv2.imwrite(dst_file_name, dst)
 
     return (0, FileInfo(dst_file_name))
+
 
 def get_args():
     """
@@ -96,20 +113,58 @@ def get_args():
 
     return args
 
+
 def print_image_info(src, dst):
     """
     Display original image and converted image information
     """
-    print(Fore.WHITE + f'{src.filename} to {dst.filename}')
-    print(Fore.WHITE + f'{src.filesize} to {dst.filesize}')
+    print("==============================")
+    print(Fore.WHITE + f'FILE_NAME : {src.filename} => {dst.filename}')
+    print(Fore.WHITE + f'FILE_SIZE : {src.filesize} => {dst.filesize}')
+    print(Fore.WHITE + f'FILE_WIDTH : {src.width}    => {dst.width}')
+    print(Fore.WHITE + f'FILE_HEIGHT : {src.height}    => {dst.height}')
+
+
+def check_file_exit(filepath: str):
+    """
+    Check if the file exists
+    """
+    try:
+        # Check if file exists
+        with open(filepath) as f:
+            pass
+        # Get information of original image
+        return FileInfo(filepath)
+    except FileNotFoundError as e:
+        return 0
+    except AttributeError as e:
+        print("[Errno 3] The specified file is not an image '" + args.input + "'")
+        sys.exit(1)
+
+
+def yes_no_input():
+    """
+    Select if the destination path already exists
+    """
+    while True:
+        choice = input("Please respond with 'yes' or 'no' [y/N]: ").lower()
+        if choice in ['y', 'ye', 'yes']:
+            return True
+        elif choice in ['n', 'no']:
+            return False
+
 
 def main():
-    print_usage()
     args = get_args()
 
-    # Get information of original image
-    src_image_info = FileInfo(args.input)
+    src_image_info = check_file_exit(args.input)
 
+    # When the output destination file already exists
+    if check_file_exit(args.o):
+        if yes_no_input() == False:
+            sys.exit(1)
+
+    # Mode select
     if args.mode == 'comp':
         (ret, dst_image_info) = compress_image(args)
     elif args.mode == 'resize':
@@ -122,5 +177,6 @@ def main():
 
     print_image_info(src_image_info, dst_image_info)
 
-if __name__ == "__main__" :
+
+if __name__ == "__main__":
     main()
