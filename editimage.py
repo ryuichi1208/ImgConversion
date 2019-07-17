@@ -18,8 +18,16 @@ K = 1000
 N = 5000
 total_flops = M*K*(2*N+3)
 
+# For filesize calculation
+KB = 1024.0
+MB = 1024.0 ** 2
+GB = 1024.0 ** 3
+TB = 1024.0 ** 4
+PT = 1024.0 ** 5
+
 # Debug Level
 verbose = 0
+
 
 class FileInfo():
     """
@@ -54,16 +62,39 @@ class FileInfo():
     def width(self):
         return self.__width
 
+    @filename.setter
+    def filename(self, filename):
+        self.__filename = filename
+
 
 def resize_image(args, src_image_info):
     """
     Image resizing function
     """
     img = cv2.imread(args.input)
-    img2 = cv2.resize(img , (int(src_image_info.width*0.1), int(src_image_info.height*0.1)))
-    cv2.imwrite(args.o , img2)
+    img2 = cv2.resize(img, (int(src_image_info.width * 0.1), int(src_image_info.height * 0.1)))
+    cv2.imwrite(args.o, img2)
 
     return (0, FileInfo(args.o))
+
+
+def roundstr(size):
+    return str(round(size, 1))
+
+
+def filesize(bytesize):
+    if bytesize < 1024:
+        return str(bytesize) + ' B'
+    elif bytesize < 1024 ** 2:
+        return roundstr(bytesize / 1024.0) + ' KB'
+    elif bytesize < 1024 ** 3:
+        return roundstr(bytesize / (1024.0 ** 2)) + ' MB'
+    elif bytesize < 1024 ** 4:
+        return roundstr(bytesize / (1024.0 ** 3)) + ' GB'
+    elif bytesize < 1024 ** 5:
+        return roundstr(bytesize / (1024.0 ** 4)) + ' TB'
+    else:
+        return str(bytesize) + ' B'
 
 
 def compress_image(args):
@@ -117,7 +148,7 @@ def get_args():
     parser.add_argument("--verbose", type=str, default='0', help='debug level')
     args = parser.parse_args()
 
-    if args.verbose:
+    if int(args.verbose) > 0:
         global verbose
         verbose = 1
 
@@ -131,9 +162,9 @@ def print_image_info(src, dst):
     print(Fore.GREEN + "[OK] Processing succeeded")
 
     if verbose:
-        print(Fore.GREEN + f'[DEBUG INFO] FILE_NAME : {src.filename} => {dst.filename}')
-        print(Fore.GREEN + f'[DEBUG INFO] FILE_SIZE : {src.filesize} => {dst.filesize}')
-        print(Fore.GREEN + f'[DEBUG INFO] FILE_WIDTH : {src.width} => {dst.width}')
+        print(Fore.GREEN + f'[DEBUG INFO] FILE_NAME   : {src.filename} => {dst.filename}')
+        print(Fore.GREEN + f'[DEBUG INFO] FILE_SIZE   : {filesize(int(src.filesize))} => {filesize(int(dst.filesize))}')
+        print(Fore.GREEN + f'[DEBUG INFO] FILE_WIDTH  : {src.width} => {dst.width}')
         print(Fore.GREEN + f'[DEBUG INFO] FILE_HEIGHT : {src.height} => {dst.height}')
 
 
@@ -153,11 +184,13 @@ def check_file_exit(filepath: str):
         print(Fore.RED + "[FAILED] The specified file is not an image '" + filepath + "'")
         sys.exit(1)
     except IsADirectoryError as e:
-        print(Fore.RED + "[FAILED] Specified file is a directory'" + filepath + "'")
-        sys.exit(1)
+        # Dig and check directories
+        if check_file_exit(filepath + '/resize.jpg') != 0:
+            print(Fore.RED + "[FAILED] Specified file is a directory'" + filepath + "'")
+            sys.exit(1)
 
 
-def yes_no_input():
+def image_oveimage_overwrite_select():
     """
     Select if the destination path already exists
     """
@@ -180,7 +213,7 @@ def main():
 
     # When the output destination file already exists
     if check_file_exit(args.o):
-        if yes_no_input() == False:
+        if image_oveimage_overwrite_select() is False:
             print(Fore.BLUE + "[INFO] : Quit the program...")
             sys.exit(1)
 
