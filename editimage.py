@@ -71,11 +71,14 @@ def resize_image(args, src_image_info):
     """
     Image resizing function
     """
-    img = cv2.imread(args.input)
-    img2 = cv2.resize(img, (int(src_image_info.width * 0.1), int(src_image_info.height * 0.1)))
-    cv2.imwrite(args.o, img2)
+    src_file_name = args.input
+    dst_file_name = args.o
 
-    return (0, FileInfo(args.o))
+    img = cv2.imread(src_file_name)
+    img2 = cv2.resize(img, (int(src_image_info.width * float(args.width)), int(src_image_info.height * float(args.height))))
+    cv2.imwrite(dst_file_name, img2)
+
+    return (0, FileInfo(dst_file_name))
 
 
 def roundstr(size):
@@ -143,8 +146,8 @@ def get_args():
     parser.add_argument('--mode', default='comp', choices=['comp', 'resize'], help='mode choice')
     parser.add_argument("-q", type=str, default='50', help='quality (0 to 100)')
     parser.add_argument("-o", type=str, default='resize.jpg', help='output file (default=resize.jpg)')
-    parser.add_argument("--height", type=str, default='100', help='Image height (default=100)')
-    parser.add_argument("--witdh", type=str, default='100', help='Image width (default=100)')
+    parser.add_argument("--height", type=str, default='1', help='Image height 0.1 to 1.0 (default1.0)')
+    parser.add_argument("--width", type=str, default='1', help='Image width 0.1 to 1.0 (default=1.0)')
     parser.add_argument("--verbose", type=str, default='0', help='debug level')
     args = parser.parse_args()
 
