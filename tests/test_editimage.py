@@ -1,7 +1,10 @@
 import pytest
 import sys
+
 sys.path.append('.')
 from editimage import *
+from usage import *
+
 
 @pytest.mark.parametrize(
     "_int, _str", [
@@ -44,3 +47,5 @@ def test_filesize(_in, _out):
 def test_compare_ext(_src_ext, _dst_ext, result):
     assert compare_ext(_src_ext, _dst_ext) == result
 
+def test_print_usage():
+    assert print_usage() == 0

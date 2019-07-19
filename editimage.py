@@ -4,6 +4,7 @@
 import sys
 import os
 import cv2
+import time
 import numpy as np
 import argparse
 import re
@@ -175,13 +176,16 @@ def print_image_info(src, dst):
     """
     Display original image and converted image information
     """
-    print(Fore.GREEN + "[OK] Processing succeeded")
-
     if verbose:
+        from tqdm import tqdm
+        for _ in tqdm(range(100), ncols=80):
+            time.sleep(0.01)
         print(Fore.GREEN + f'[DEBUG INFO] FILE_NAME   : {src.filename} => {dst.filename}')
         print(Fore.GREEN + f'[DEBUG INFO] FILE_SIZE   : {filesize(int(src.filesize))} => {filesize(int(dst.filesize))}')
         print(Fore.GREEN + f'[DEBUG INFO] FILE_WIDTH  : {src.width} => {dst.width}')
         print(Fore.GREEN + f'[DEBUG INFO] FILE_HEIGHT : {src.height} => {dst.height}')
+
+    print(Fore.GREEN + "[OK] Processing succeeded")
 
 
 def check_file_exit(filepath: str):
