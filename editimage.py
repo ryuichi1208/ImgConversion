@@ -82,10 +82,16 @@ def resize_image(args, src_image_info):
 
 
 def roundstr(size):
+    """
+    Round up and return as string
+    """
     return str(round(size, 1))
 
 
 def filesize(bytesize):
+    """
+    Format file size
+    """
     if bytesize < 1024:
         return str(bytesize) + ' B'
     elif bytesize < 1024 ** 2:
@@ -98,6 +104,14 @@ def filesize(bytesize):
         return roundstr(bytesize / (1024.0 ** 4)) + ' TB'
     else:
         return str(bytesize) + ' B'
+
+def compare_ext(src_ext, dst_ext):
+    """
+    An error occurs because the extension conversion is not supported
+    """
+    if not src_ext == dst_ext:
+        return 1
+    return 0
 
 
 def compress_image(args):
@@ -112,8 +126,7 @@ def compress_image(args):
     src_path, src_ext = os.path.splitext(src_file_name)
     dst_path, dst_ext = os.path.splitext(dst_file_name)
 
-    # An error occurs because the extension conversion is not supported
-    if not src_ext == dst_ext:
+    if compare_ext(src_ext, dst_ext):
         print("[FAILED] : Invarid extensions", src_ext, dst_ext)
         sys.exit(1)
 
