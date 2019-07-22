@@ -1,5 +1,6 @@
 import os
 import argparse
+from src.compress_image import *
 from src.logger import logger
 
 # Program Version
@@ -48,6 +49,7 @@ def dispatch_exec_mode(args):
     if hasattr(args, 'quality'):
         if args.quality < 0 or 100 < args.quality:
             logger("ERROR", "Invalid argument of quality value", 1)
+        compress_image("")
     elif hasattr(args, 'height'):
         print("MODE resize")
     else:
