@@ -30,6 +30,44 @@ PT = 1024.0 ** 5
 verbose = 0
 
 
+class FileInfo():
+    """
+    Class for holding file information
+    """
+    def __init__(self, filename):
+        img = cv2.imread(filename, cv2.IMREAD_COLOR)
+        img_height, img_width, channels = img.shape[:3]
+        self.__filename = filename
+        self.__filesize = os.path.getsize(filename)
+        self.__ctime = os.stat(filename).st_mtime
+        self.__height = img_height
+        self.__width = img_width
+
+    @property
+    def filename(self):
+        return self.__filename
+
+    @property
+    def filesize(self):
+        return self.__filesize
+
+    @property
+    def ctime(self):
+        return self.__ctime
+
+    @property
+    def height(self):
+        return self.__height
+
+    @property
+    def width(self):
+        return self.__width
+
+    @filename.setter
+    def filename(self, filename):
+        self.__filename = filename
+
+
 def main():
     """
     ImgConversion main function
