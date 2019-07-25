@@ -1,4 +1,5 @@
 import os
+import platform
 import argparse
 from src.compress_image import *
 from src.logger import logger
@@ -18,9 +19,12 @@ def get_option_and_parse():
 
     # comp
     parser_comp = subparsers.add_parser('comp', help='see `comp -h`')
-    parser_comp.add_argument('-i', '--input', help='Imput file')
+    parser_comp.add_argument("input", type=str, help='Input file')
+    parser_comp.add_argument('-o', '--output', default='resize.jpg', help='Output file')
     parser_comp.add_argument('-q', '--quality', type=int, default=50, help='quality (0 to 100)')
     parser_comp.add_argument("--verbose", type=int, default='0', help='debug level')
+    if platform.system() == "Darwin":
+        parser_comp.add_argument('--open', action='store_true', help='Open resized image')
 
     # resize
     parser_resize = subparsers.add_parser('resize', help='see `resize -h`')
@@ -49,7 +53,7 @@ def dispatch_exec_mode(args):
     if hasattr(args, 'quality'):
         if args.quality < 0 or 100 < args.quality:
             logger("ERROR", "Invalid argument of quality value", 1)
-        compress_image("")
+        compress_image(args)
     elif hasattr(args, 'height'):
         print("MODE resize")
     else:

@@ -1,5 +1,20 @@
 import os
+import sys
 import cv2
+import subprocess
+
+def compare_ext(src_ext, dst_ext):
+    """
+    An error occurs because the extension conversion is not supported
+    """
+    if not src_ext == dst_ext:
+        return 1
+    return 0
+
+def open_image(dst_file_name):
+    cmd = ["open", dst_file_name]
+    res = subprocess.call(cmd)
+
 
 def compress_image(args):
     """
@@ -7,7 +22,7 @@ def compress_image(args):
     """
     channel = 1
     src_file_name = args.input
-    dst_file_name = args.o
+    dst_file_name = args.output
 
     # Compare extensions
     src_path, src_ext = os.path.splitext(src_file_name)
@@ -21,7 +36,7 @@ def compress_image(args):
 
     (result, encimg) = cv2.imencode('.jpg', img, [
         int(cv2.IMWRITE_JPEG_QUALITY),
-        int(args.q)
+        int(args.quality)
     ])
 
     if result is False:
@@ -32,4 +47,6 @@ def compress_image(args):
     # Image writing process
     cv2.imwrite(dst_file_name, dst)
 
-    return (0, FileInfo(dst_file_name))
+    if args.open:
+        open_image(dst_file_name)
+

@@ -13,19 +13,6 @@ from colorama import Fore
 # Program Version
 VERSION = "1.0.0"
 
-# Select a problem size
-M = 10000
-K = 1000
-N = 5000
-total_flops = M*K*(2*N+3)
-
-# For filesize calculation
-KB = 1024.0
-MB = 1024.0 ** 2
-GB = 1024.0 ** 3
-TB = 1024.0 ** 4
-PT = 1024.0 ** 5
-
 # Debug Level
 verbose = 0
 
