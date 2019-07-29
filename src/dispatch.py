@@ -7,6 +7,18 @@ from src.logger import logger
 # Program Version
 VERSION = "1.0.0"
 
+# ext
+SUFFIX = { "C": ".c", "C++": ".cpp", "F": ".f90"}
+
+# Compiler
+COMPILER = { "C": "/opt/nec/ve/bin/ncc",
+             "C++": "/opt/nec/ve/bin/nc++",
+             "F": "/opt/nec/ve/bin/nfort" }
+
+# Compile Options
+FLAGS = { "C": "-O2 -fpic -pthread -report-all -fdiag-vector=2",
+          "C++": "-O2 -fpic -pthread -finline -finline-functions -report-all -fdiag-vector=2",
+          "F": "-O2 -fpic -pthread -report-all -fdiag-vector=2" }
 
 def get_option_and_parse():
     """
