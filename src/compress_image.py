@@ -3,6 +3,14 @@ import sys
 import cv2
 import subprocess
 
+import string
+import secrets
+
+def pass_gen(size=12):
+  chars = string.ascii_uppercase + string.ascii_lowercase + string.digits \
+          #+ '%&$#()'
+  return ''.join(secrets.choice(chars) for x in range(size))
+
 def compare_ext(src_ext, dst_ext):
     """
     An error occurs because the extension conversion is not supported
