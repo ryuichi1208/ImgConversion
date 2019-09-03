@@ -30,6 +30,15 @@ PT = 1024.0 ** 5
 verbose = 0
 
 
+def read_file(path):
+    """
+    data set
+    """
+    with open(path, mode='r') as f:
+        text = f.read()
+    return text
+
+
 class FileInfo():
     """
     Class for holding file information

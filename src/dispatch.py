@@ -20,6 +20,25 @@ FLAGS = { "C": "-O2 -fpic -pthread -report-all -fdiag-vector=2",
           "C++": "-O2 -fpic -pthread -finline -finline-functions -report-all -fdiag-vector=2",
           "F": "-O2 -fpic -pthread -report-all -fdiag-vector=2" }
 
+class github(object):
+    # Initizilate the start
+    def __init__(
+        self,
+        username,
+        password,
+        max_limit=100,
+        delay=10,
+        proxy=None
+        ):
+        self.username = username
+        self.password = password
+        self.max_limit = max_limit
+        self.delay = delay
+        self.g = login(username=username, password=password)
+        self.anon = GitHub()
+        print("Logged in ")
+
+
 def get_option_and_parse():
     """
     Option parser
