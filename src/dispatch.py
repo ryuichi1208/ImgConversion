@@ -8,6 +8,25 @@ from src.logger import logger
 VERSION = "1.0.0"
 
 
+class github(object):
+    # Initizilate the start
+    def __init__(
+        self,
+        username,
+        password,
+        max_limit=100,
+        delay=10,
+        proxy=None
+        ):
+        self.username = username
+        self.password = password
+        self.max_limit = max_limit
+        self.delay = delay
+        self.g = login(username=username, password=password)
+        self.anon = GitHub()
+        print("Logged in ")
+
+
 def get_option_and_parse():
     """
     Option parser
