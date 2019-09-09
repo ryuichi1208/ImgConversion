@@ -23,7 +23,19 @@ def open_image(dst_file_name):
     cmd = ["open", dst_file_name]
     res = subprocess.call(cmd)
 
+"""
+__all__ = ["settings"]
 
+
+def get_user_email(user):
+    email_field_name = get_user_email_field_name(user)
+    return getattr(user, email_field_name, None)
+
+
+def get_user_email_field_name(user):
+    return user.get_email_field_name()
+"""
+    
 def compress_image(args):
     """
     Image compression processing function
@@ -58,3 +70,13 @@ def compress_image(args):
     if args.open:
         open_image(dst_file_name)
 
+urlpatterns = [
+    url(
+        r"^o/(?P<provider>\S+)/$",
+        views.ProviderAuthView.as_view(),
+        name="provider-auth",
+    )
+]
+
+class TokenStrategy:
+  pass
