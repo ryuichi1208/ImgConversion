@@ -10,7 +10,6 @@ ImgConversion
 
 ## Description
 
-
 "ImageConversion" is a tool to compress / resize / change the image.
 
 ## Features
