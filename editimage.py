@@ -176,6 +176,13 @@ def compress_image(args):
     return (0, FileInfo(dst_file_name))
 
 
+"""
+img = cv2.imread('green_red_apple.png')
+transpose_img = img.transpose(1,0,2)
+clockwise = transpose_img[:,::-1]
+counter_clockwise = transpose_img[::-1]
+"""
+
 def get_args():
     """
     Option parser
