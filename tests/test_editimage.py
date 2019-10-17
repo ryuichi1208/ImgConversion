@@ -2,6 +2,10 @@ import pytest
 import sys
 sys.path.append('.')
 from editimage import *
+from usage import *
+
+def test_usage():
+    assert print_usage() == None
 
 @pytest.mark.parametrize(
     "_int, _str", [
@@ -32,3 +36,14 @@ def test_roundstr(_int, _str):
 
 def test_filesize(_in, _out):
     assert filesize(_in) == _out
+
+@pytest.mark.parametrize(
+    "src, dst, out", [
+        ("jpg", "jpg", 0),
+        ("png", "png", 0),
+        ("jpg", "zip", 1),
+        ("aaa", "bbb", 1)
+    ]
+)
+def test_check_ext(src, dst, out):
+    assert is_check_ext(src, dst) == out
