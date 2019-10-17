@@ -33,4 +33,9 @@ optional arguments:
     print(Fore.YELLOW + BANNER)
     print(Fore.WHITE + USAGE)
 
+<<<<<<< HEAD:usage.py
+=======
+    return 0
+
+>>>>>>> 30cbdc2cc2d984b27aea19058fce1d9b83c70dc2:src/usage.py
 print_usage()

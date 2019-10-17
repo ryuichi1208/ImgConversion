@@ -82,12 +82,10 @@ def read():
 		print(red + "File error", str(err) + white)
 
 	except pickle.PickleError as perr:
-		print(red + "Encrypting error", str(perr) + white)		
-			
+		print(red + "Encrypting error", str(perr) + white)
 	print(yellow + '\nThose are the contents of the file.' + white)
 
 	input()
-	
 def write():
 	"""
 		User creates a new file and writes data contents onto it.
@@ -107,9 +105,8 @@ def write():
 
 	except pickle.PickleError as perr:
 		print(red + "Encrypting error", str(perr) + white)
-		
 	input()
-	
+
 def edit():
 	"""
 		User opens existing document and appends data onto it.
@@ -129,6 +126,6 @@ def edit():
 		print(red + "Encrypting error", str(perr) + white)
 
 	input()
-	
+
 if __name__ == "__main__":
 	mainMenu()

@@ -4,30 +4,58 @@
 import sys
 import os
 import cv2
+import time
 import numpy as np
 import argparse
 import re
 from colorama import Fore
 
-# Program Version
-VERSION = "1.0.0"
+import argparse
+import os
+import pandas as pd
+import yaml
+from tqdm import tqdm
 
-# Select a problem size
-M = 10000
-K = 1000
-N = 5000
-total_flops = M*K*(2*N+3)
 
-# For filesize calculation
-KB = 1024.0
-MB = 1024.0 ** 2
-GB = 1024.0 ** 3
-TB = 1024.0 ** 4
-PT = 1024.0 ** 5
+from utils.db_connection import get_connection
+from utils.create_dir import create_dir
+from utils.logger import get_logger
+from utils.read_file import read_file
 
-# Debug Level
-verbose = 0
 
+logging = get_logger()
+
+
+def download_dataset(sql_file, conn, output_file):
+    sql = read_file(sql_file)
+    logging.info(sql)
+
+    df = pd.read_sql_query(sql, con=conn, chunksize=100000)
+    chunk = next(df)
+    chunk.drop_duplicates().to_csv(output_file, mode='w', index=None)
+    for chunk in tqdm(df):
+        chunk.drop_duplicates().to_csv(output_file, mode='a', index=None, header=None)
+
+
+if __name__ == '__main__':
+    parser = argparse.ArgumentParser(description='')
+    parser.add_argument('--config_file', type=str, default='./etc/foo.cfg')
+
+    args = parser.parse_args()
+    logging.info("Args : {}".format(args))
+
+    config = yaml.safe_load(open(args.config_file))
+    sql_file = config['sql_file']
+    output_file = config['output_file']
+
+    create_dir(os.path.dirname(output_file))
+
+    if os.path.exists(output_file):
+        logging.warning('There is already a file with name %s' % output_file)
+    else:
+        logging.info('Downloading download_dataset from database')
+        download_dataset(sql_file, get_connection(config['db']), output_file)
+    logging.info("End of file.")
 
 class FileInfo():
     """
@@ -83,7 +111,11 @@ def resize_image(args, src_image_info):
 
 def roundstr(size):
     """
+<<<<<<< HEAD
     Perform round-up processing
+=======
+    Round up and return as string
+>>>>>>> 30cbdc2cc2d984b27aea19058fce1d9b83c70dc2
     """
     return str(round(size, 1))
 
@@ -104,6 +136,14 @@ def filesize(bytesize):
         return roundstr(bytesize / (1024.0 ** 4)) + ' TB'
     else:
         return str(bytesize) + ' B'
+
+def compare_ext(src_ext, dst_ext):
+    """
+    An error occurs because the extension conversion is not supported
+    """
+    if not src_ext == dst_ext:
+        return 1
+    return 0
 
 
 def is_check_ext(src_ext, dst_ext):
@@ -128,7 +168,11 @@ def compress_image(args):
     src_path, src_ext = os.path.splitext(src_file_name)
     dst_path, dst_ext = os.path.splitext(dst_file_name)
 
+<<<<<<< HEAD
     if is_check_ext(src_ext, dst_ext):
+=======
+    if compare_ext(src_ext, dst_ext):
+>>>>>>> 30cbdc2cc2d984b27aea19058fce1d9b83c70dc2
         print("[FAILED] : Invarid extensions", src_ext, dst_ext)
         sys.exit(1)
 
@@ -149,6 +193,13 @@ def compress_image(args):
 
     return (0, FileInfo(dst_file_name))
 
+
+"""
+img = cv2.imread('green_red_apple.png')
+transpose_img = img.transpose(1,0,2)
+clockwise = transpose_img[:,::-1]
+counter_clockwise = transpose_img[::-1]
+"""
 
 def get_args():
     """
@@ -177,13 +228,16 @@ def print_image_info(src, dst):
     """
     Display original image and converted image information
     """
-    print(Fore.GREEN + "[OK] Processing succeeded")
-
     if verbose:
+        from tqdm import tqdm
+        for _ in tqdm(range(100), ncols=80):
+            time.sleep(0.01)
         print(Fore.GREEN + f'[DEBUG INFO] FILE_NAME   : {src.filename} => {dst.filename}')
         print(Fore.GREEN + f'[DEBUG INFO] FILE_SIZE   : {filesize(int(src.filesize))} => {filesize(int(dst.filesize))}')
         print(Fore.GREEN + f'[DEBUG INFO] FILE_WIDTH  : {src.width} => {dst.width}')
         print(Fore.GREEN + f'[DEBUG INFO] FILE_HEIGHT : {src.height} => {dst.height}')
+
+    print(Fore.GREEN + "[OK] Processing succeeded")
 
 
 def check_file_exit(filepath: str):

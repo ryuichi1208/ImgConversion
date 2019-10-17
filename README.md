@@ -1,9 +1,14 @@
+![GitHub release (latest by date)](https://img.shields.io/github/v/release/ryuichi1208/ImgConversion)
+![GitHub repo size](https://img.shields.io/github/repo-size/ryuichi1208/ImgConversion)
+![GitHub commit activity](https://img.shields.io/github/commit-activity/m/ryuichi1208/ImgConversion)
+![Python version](https://img.shields.io/badge/Python-3.6%2F3.7-red)
+[![CircleCI](https://circleci.com/gh/ryuichi1208/ImgConversion.svg?style=svg)](https://circleci.com/gh/ryuichi1208/ImgConversion)
+
 ## Project Title
 
 ImgConversion
 
 ## Description
-
 
 "ImageConversion" is a tool to compress / resize / change the image.
 
