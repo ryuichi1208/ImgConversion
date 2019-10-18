@@ -111,11 +111,8 @@ def resize_image(args, src_image_info):
 
 def roundstr(size):
     """
-<<<<<<< HEAD
     Perform round-up processing
-=======
     Round up and return as string
->>>>>>> 30cbdc2cc2d984b27aea19058fce1d9b83c70dc2
     """
     return str(round(size, 1))
 
@@ -168,11 +165,7 @@ def compress_image(args):
     src_path, src_ext = os.path.splitext(src_file_name)
     dst_path, dst_ext = os.path.splitext(dst_file_name)
 
-<<<<<<< HEAD
-    if is_check_ext(src_ext, dst_ext):
-=======
     if compare_ext(src_ext, dst_ext):
->>>>>>> 30cbdc2cc2d984b27aea19058fce1d9b83c70dc2
         print("[FAILED] : Invarid extensions", src_ext, dst_ext)
         sys.exit(1)
 
